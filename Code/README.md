@@ -1,1 +1,1 @@
-# Welcome to the Robot Code for the FTC2022 Season
+# Welcome to the Code for the FTC2022 Season
