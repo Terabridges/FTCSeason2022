@@ -125,6 +125,8 @@ public class Square extends OpMode
         double leftFrontPower;
         double rightFrontPower;
 
+
+        // Set powers based on joystics
         double forward = -gamepad1.left_stick_y;
         double side  =  gamepad1.left_stick_x;
         double rotation = -gamepad1.right_stick_x;
@@ -142,6 +144,7 @@ public class Square extends OpMode
         leftFront.setPower(leftFrontPower);
         rightFront.setPower(rightFrontPower);
 
+        // Move arm
         if (gamepad1.a) {
             arm.setPower(1);
         } else if (gamepad1.y) {
@@ -149,16 +152,20 @@ public class Square extends OpMode
         } else {
             arm.setPower(0);
         }
+        // Move wheel
+        wheelSpeed = 0;
+        if (gamepad1.dpad_left) {
+            wheelSpeed = 0.5;
+        } else if (gamepad1.dpad_right) {
+            wheelSpeed = -0.5;
+        }
+
+        // Move hand
         if (gamepad1.left_bumper) {
-            hand.setPosition(1);
-        } else if(gamepad1.right_bumper) {
             hand.setPosition(0.5);
         }
-        wheelSpeed *= 0.95;
-        if (gamepad1.dpad_left) {
-            wheelSpeed += 0.04;
-        } else if (gamepad1.dpad_right) {
-            wheelSpeed -= 0.04;
+        if (gamepad1.right_bumper) {
+            hand.setPosition(0.7);
         }
         if(wheelSpeed < 1) {
             wheel.setPower(wheelSpeed);
@@ -166,6 +173,7 @@ public class Square extends OpMode
             wheel.setPower(1);
         }
 
+        // slow down when b is pressed
         if(gamepad1.b) {
             if (!aPressed) {
                 if(powerMultiplier == 1) {
@@ -179,7 +187,7 @@ public class Square extends OpMode
             aPressed = false;
         }
 
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Status", "Run Time: " + getRuntime());
         telemetry.addData("Power", wheelSpeed);
 
 
