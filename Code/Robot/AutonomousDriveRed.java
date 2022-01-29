@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class AutonomousDriveRed extends LinearOpMode {
     private DcMotor rightBack = null;
     private DcMotor leftFront = null;
     private DcMotor rightFront = null;
+    private DcMotor arm = null;
+    private Servo hand = null;
     private DcMotor wheel = null;
     private ElapsedTime runtime = new ElapsedTime();
     public void setPowers(double direction, double speed, double rotation){
@@ -25,6 +28,7 @@ public class AutonomousDriveRed extends LinearOpMode {
         double rightBackPower;
         double leftFrontPower;
         double rightFrontPower;
+
 
         double forward = Math.cos(direction)*speed;
         double side  =  Math.sin(direction)*speed;
@@ -48,9 +52,11 @@ public class AutonomousDriveRed extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
         leftFront  = hardwareMap.get(DcMotor.class, "left_front");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        hand = hardwareMap.get(Servo.class, "hand");
         wheel = hardwareMap.get(DcMotor.class, "wheel");
         leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         wheel.setDirection(DcMotor.Direction.FORWARD);
@@ -58,26 +64,57 @@ public class AutonomousDriveRed extends LinearOpMode {
         waitForStart();
         double startTime = getRuntime();
 
-        //Left
-        leftFront.setPower(-0.5);
-        rightFront.setPower(0.5);
-        leftBack.setPower(0.5);
-        rightBack.setPower(-0.5);
-        while(opModeIsActive() && getRuntime() < startTime + 2){
-            telemetry.addData("I am", runtime);
-        }
+        hand.setPosition(0.75);
+        sleep(1250);
+        arm.setPower(-1);
 
-        //Stop
+        //Diagonal
+        leftFront.setPower(0.5);
+        leftBack.setPower(-0.1);
+        rightFront.setPower(-0.1);
+        rightBack.setPower(0.5);
+        sleep(800);
+        arm.setPower(0);
+        sleep(800);
+
+        //Drop
+        hand.setPosition(0.5);
         leftFront.setPower(0);
-        rightFront.setPower(0);
         leftBack.setPower(0);
+        rightFront.setPower(0);
         rightBack.setPower(0);
+        sleep(500);
+
+        //Diagonal back
+        leftFront.setPower(-0.5);
+        leftBack.setPower(0.1);
+        rightFront.setPower(0.1);
+        rightBack.setPower(-0.5);
+        sleep(1600);
+
+        //Forward
+        leftFront.setPower(0.5);
+        leftBack.setPower(0.5);
+        rightFront.setPower(0.5);
+        rightBack.setPower(0.5);
+        sleep(250);
+
+        //Left
+        leftFront.setPower(-0.25);
+        rightFront.setPower(0.25);
+        leftBack.setPower(0.25);
+        rightBack.setPower(-0.25);
+        sleep(2200);
+
+        //Stopish
+        leftFront.setPower(-0.15);
+        rightFront.setPower(0.15);
+        leftBack.setPower(0.15);
+        rightBack.setPower(-0.15);
 
         //Wheel movement
-        wheel.setPower(0.25);
-        while(opModeIsActive() && getRuntime() < startTime + 9){
-            telemetry.addData("I am", runtime);
-        }
+        wheel.setPower(0.5);
+        sleep(4000);
 
 
         //Forward
@@ -85,18 +122,14 @@ public class AutonomousDriveRed extends LinearOpMode {
         rightFront.setPower(0.5);
         leftBack.setPower(0.5);
         rightBack.setPower(0.5);
-        while(opModeIsActive() && getRuntime() < startTime + 10.2){
-            telemetry.addData("I am", runtime);
-        }
+        sleep(750);
 
         //Left
         leftFront.setPower(-0.25);
         rightFront.setPower(0.25);
         leftBack.setPower(0.25);
         rightBack.setPower(-0.25);
-        while(opModeIsActive() && getRuntime() < startTime + 10.55){
-            telemetry.addData("I am", runtime);
-        }
+        sleep(300);
 
 
         stop();
